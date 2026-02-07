@@ -1,1 +1,2390 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eden Software | Smart Web Solutions, Kiwi Style</title>
+    <meta name="description" content="Eden Software - NZ-based web solutions. Buy code, rent modules, or custom builds. Websites, apps, portals & marketplaces.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        eden: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16',
+                        },
+                        accent: {
+                            DEFAULT: '#00d4ff',
+                            dark: '#00a8cc',
+                            light: '#7ee8fa'
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'slide-up': 'slideUp 0.6s ease-out forwards',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- GSAP for smooth animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #22c55e;
+            border-radius: 5px;
+        }
+        
+        /* Glassmorphism utilities */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-dark {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Gradient text */
+        .text-gradient {
+            background: linear-gradient(135deg, #22c55e 0%, #00d4ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Custom range slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #22c55e;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #334155;
+            border-radius: 2px;
+        }
+        
+        /* Interactive card hover effects */
+        .module-card, .showcase-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .module-card:hover, .showcase-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -15px rgba(34, 197, 94, 0.3);
+        }
+        
+        /* Step indicator animation */
+        .step-line {
+            background: linear-gradient(90deg, #22c55e 0%, #00d4ff 100%);
+            background-size: 200% 100%;
+            animation: gradient-flow 2s ease infinite;
+        }
+        
+        @keyframes gradient-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Mockup device frame */
+        .device-mockup {
+            border: 12px solid #1e293b;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            background: #0f172a;
+        }
+        .device-mockup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 20px;
+            background: #1e293b;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            z-index: 10;
+        }
+        
+        /* Hide scrollbar for horizontal scroll */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Animation classes */
+        .animate-slide-up {
+            animation: slideUp 0.6s ease-out forwards;
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        /* Fix for step content visibility */
+        .step-content {
+            display: none;
+        }
+        .step-content:not(.hidden) {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
 
+        /* Showcase iframe container */
+        .showcase-preview {
+            position: relative;
+            overflow: hidden;
+            background: #0f172a;
+        }
+        .showcase-preview iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            transform-origin: top left;
+        }
+        .showcase-preview::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: inherit;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans antialiased overflow-x-hidden">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-dark transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-2 cursor-pointer" onclick="router.navigate('home')">
+                    <svg class="w-10 h-10 text-eden-400" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 5C15 5 10 8 8 13C6 18 8 24 12 28C16 32 20 35 20 35C20 35 24 32 28 28C32 24 34 18 32 13C30 8 25 5 20 5Z" stroke="currentColor" stroke-width="2.5" fill="none"/>
+                        <path d="M20 12C17 12 14 14 13 17C12 20 13 24 16 26C18 28 20 30 20 30C20 30 22 28 24 26C27 24 28 20 27 17C26 14 23 12 20 12Z" fill="currentColor" opacity="0.6"/>
+                        <circle cx="20" cy="19" r="3" fill="#0f172a"/>
+                    </svg>
+                    <span class="font-display font-bold text-2xl tracking-tight">Eden<span class="text-eden-400">.</span></span>
+                </div>
+                
+                <div class="hidden md:flex items-center gap-6">
+                    <button onclick="router.navigate('modules')" class="text-slate-300 hover:text-white transition-colors font-medium">Modules</button>
+                    <button onclick="router.navigate('pricing')" class="text-slate-300 hover:text-white transition-colors font-medium">Pricing</button>
+                    <button onclick="router.navigate('showcase')" class="text-slate-300 hover:text-white transition-colors font-medium">Showcase</button>
+                    <button onclick="router.navigate('demos')" class="text-slate-300 hover:text-white transition-colors font-medium">Demos</button>
+                    <button onclick="router.navigate('how-it-works')" class="text-slate-300 hover:text-white transition-colors font-medium">How It Works</button>
+                    <button onclick="router.navigate('hosting')" class="text-slate-300 hover:text-white transition-colors font-medium">Hosting</button>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <button onclick="router.navigate('quote')" class="hidden sm:block text-slate-300 hover:text-white transition-colors font-medium">Get Quote</button>
+                    <button onclick="router.navigate('quote')" class="bg-eden-500 hover:bg-eden-400 text-slate-900 font-bold py-2.5 px-6 rounded-full transition-all transform hover:scale-105 shadow-lg shadow-eden-500/25">
+                        Start Building
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main id="app" class="pt-20 min-h-screen">
+        <!-- Dynamic content injected here -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-2 mb-4">
+                        <svg class="w-8 h-8 text-eden-400" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 5C15 5 10 8 8 13C6 18 8 24 12 28C16 32 20 35 20 35C20 35 24 32 28 28C32 24 34 18 32 13C30 8 25 5 20 5Z" stroke="currentColor" stroke-width="2.5" fill="none"/>
+                            <path d="M20 12C17 12 14 14 13 17C12 20 13 24 16 26C18 28 20 30 20 30C20 30 22 28 24 26C27 24 28 20 27 17C26 14 23 12 20 12Z" fill="currentColor" opacity="0.6"/>
+                        </svg>
+                        <span class="font-display font-bold text-xl">Eden Software</span>
+                    </div>
+                    <p class="text-slate-400 mb-4 max-w-sm">Kiwi-made web solutions. Buy the code, rent the module, or go custom. Based in Aotearoa New Zealand.</p>
+                    <div class="flex gap-4">
+                        <a href="#" class="text-slate-400 hover:text-eden-400 transition-colors">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                        </a>
+                        <a href="#" class="text-slate-400 hover:text-eden-400 transition-colors">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-display font-bold text-white mb-4">Product</h3>
+                    <ul class="space-y-2 text-slate-400">
+                        <li><button onclick="router.navigate('modules')" class="hover:text-eden-400 transition-colors">Modules Store</button></li>
+                        <li><button onclick="router.navigate('pricing')" class="hover:text-eden-400 transition-colors">Pricing</button></li>
+                        <li><button onclick="router.navigate('showcase')" class="hover:text-eden-400 transition-colors">Showcase</button></li>
+                        <li><button onclick="router.navigate('demos')" class="hover:text-eden-400 transition-colors">Demos</button></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-display font-bold text-white mb-4">Company</h3>
+                    <ul class="space-y-2 text-slate-400">
+                        <li><button onclick="router.navigate('how-it-works')" class="hover:text-eden-400 transition-colors">How It Works</button></li>
+                        <li><button onclick="router.navigate('quote')" class="hover:text-eden-400 transition-colors">Get a Quote</button></li>
+                        <li><button onclick="router.navigate('contact')" class="hover:text-eden-400 transition-colors">Contact</button></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-slate-500 text-sm">&copy; 2024 Eden Software Ltd. All rights reserved. Made in NZ.</p>
+                <div class="flex gap-6 text-sm text-slate-500">
+                    <a href="#" class="hover:text-slate-300">Privacy Policy</a>
+                    <a href="#" class="hover:text-slate-300">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // ==========================================
+        // DATA STORE - Module Catalog
+        // ==========================================
+        const modulesData = [
+            {
+                id: 'website-starter',
+                category: 'Website Starter Kits',
+                name: 'Business Pro Website',
+                description: 'Complete business website with CMS, contact forms, and SEO optimization. Perfect for professional services.',
+                buyPrice: 2499,
+                rentSetup: 499,
+                rentMonthly: 89,
+                features: ['5-10 pages', 'CMS integration', 'Contact forms', 'SEO ready', 'Mobile responsive', 'Analytics setup'],
+                techStack: ['Next.js', 'Tailwind CSS', 'Sanity CMS'],
+                demoUrl: '#demo-website',
+                popular: true
+            },
+            {
+                id: 'booking-system',
+                category: 'Booking Systems',
+                name: 'Smart Bookings Pro',
+                description: 'Appointment and reservation system with calendar sync, payments, and automated reminders.',
+                buyPrice: 3999,
+                rentSetup: 799,
+                rentMonthly: 149,
+                features: ['Online bookings', 'Calendar sync', 'Payment processing', 'SMS reminders', 'Staff management', 'Customer portal'],
+                techStack: ['React', 'Node.js', 'PostgreSQL', 'Stripe'],
+                demoUrl: '#demo-booking',
+                popular: true
+            },
+            {
+                id: 'ecommerce-core',
+                category: 'Ecommerce',
+                name: 'Shop Base',
+                description: 'Full-featured online store with inventory, variants, and multi-payment support.',
+                buyPrice: 5499,
+                rentSetup: 999,
+                rentMonthly: 199,
+                features: ['Product management', 'Shopping cart', 'Checkout flow', 'Inventory tracking', 'Discount codes', 'Order management'],
+                techStack: ['Next.js', 'Stripe', 'PostgreSQL', 'AWS'],
+                demoUrl: '#demo-shop',
+                popular: false
+            },
+            {
+                id: 'membership-portal',
+                category: 'Membership Portals',
+                name: 'Member Hub',
+                description: 'Subscription-based member area with tiered access, content protection, and community features.',
+                buyPrice: 4499,
+                rentSetup: 899,
+                rentMonthly: 179,
+                features: ['User tiers', 'Content gating', 'Recurring billing', 'Member directory', 'Forums/Discussions', 'Resource library'],
+                techStack: ['Next.js', 'Auth0', 'Stripe', 'Prisma'],
+                demoUrl: '#demo-membership',
+                popular: true
+            },
+            {
+                id: 'admin-dashboard',
+                category: 'Admin Dashboards',
+                name: 'Admin Central',
+                description: 'Comprehensive admin panel with data visualization, user management, and reporting.',
+                buyPrice: 3299,
+                rentSetup: 649,
+                rentMonthly: 129,
+                features: ['Data tables', 'Charts & graphs', 'User roles', 'Export reports', 'Activity logs', 'API integration'],
+                techStack: ['React', 'TanStack Query', 'Recharts', 'Tailwind'],
+                demoUrl: '#demo-admin',
+                popular: false
+            },
+            {
+                id: 'marketplace-engine',
+                category: 'Marketplace Module',
+                name: 'Market Maker',
+                description: 'Multi-vendor marketplace with vendor dashboards, commission system, and escrow.',
+                buyPrice: 8999,
+                rentSetup: 1499,
+                rentMonthly: 349,
+                features: ['Multi-vendor', 'Vendor dashboards', 'Commission engine', 'Escrow payments', 'Review system', 'Dispute handling'],
+                techStack: ['Next.js', 'Node.js', 'PostgreSQL', 'Stripe Connect'],
+                demoUrl: '#demo-marketplace',
+                popular: false
+            }
+        ];
+
+        // ==========================================
+        // SHOWCASE DATA - Your Portfolio
+        // ==========================================
+        const showcaseData = [
+            {
+                id: 'kai-kart',
+                title: 'Kai Kart',
+                tagline: 'Modern e-commerce platform',
+                description: 'A sleek, modern e-commerce solution built for the New Zealand market. Features responsive design, smooth animations, and intuitive user experience.',
+                url: 'https://kaikartnz.github.io/Eden-Software/',
+                type: 'E-commerce Website',
+                industry: 'Retail',
+                year: '2024',
+                features: ['Responsive Design', 'Product Catalog', 'Shopping Cart', 'Modern UI/UX', 'Fast Performance'],
+                techStack: ['HTML5', 'CSS3', 'JavaScript', 'GitHub Pages'],
+                color: 'from-purple-500 to-pink-500',
+                icon: '🛒'
+            },
+            {
+                id: 'eden-platform',
+                title: 'Eden Platform',
+                tagline: 'Business management dashboard',
+                description: 'A comprehensive business management platform with modern interface design, data visualization, and streamlined workflow management.',
+                url: 'https://m2bcksnbt2fpm.ok.kimi.link/',
+                type: 'Web Application',
+                industry: 'Business Services',
+                year: '2024',
+                features: ['Dashboard UI', 'Data Visualization', 'User Management', 'Responsive Layout', 'Modern Design System'],
+                techStack: ['React', 'Tailwind CSS', 'Modern Stack'],
+                color: 'from-eden-500 to-accent',
+                icon: '⚡'
+            }
+        ];
+
+        // ==========================================
+        // ROUTER SYSTEM
+        // ==========================================
+        const router = {
+            currentRoute: 'home',
+            
+            navigate(route) {
+                this.currentRoute = route;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                this.render();
+            },
+            
+            render() {
+                const app = document.getElementById('app');
+                const route = this.currentRoute;
+                
+                // Clean up previous event listeners and GSAP instances
+                if (window.ScrollTrigger) {
+                    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+                }
+                
+                switch(route) {
+                    case 'home':
+                        app.innerHTML = this.getHomePage();
+                        this.initHomeAnimations();
+                        break;
+                    case 'modules':
+                        app.innerHTML = this.getModulesPage();
+                        this.initModulesAnimations();
+                        break;
+                    case 'pricing':
+                        app.innerHTML = this.getPricingPage();
+                        break;
+                    case 'showcase':
+                        app.innerHTML = this.getShowcasePage();
+                        this.initShowcaseAnimations();
+                        break;
+                    case 'demos':
+                        app.innerHTML = this.getDemosPage();
+                        break;
+                    case 'how-it-works':
+                        app.innerHTML = this.getHowItWorksPage();
+                        break;
+                    case 'hosting':
+                        app.innerHTML = this.getHostingPage();
+                        break;
+                    case 'quote':
+                        app.innerHTML = this.getQuotePage();
+                        break;
+                    case 'contact':
+                        app.innerHTML = this.getContactPage();
+                        break;
+                    default:
+                        app.innerHTML = this.getHomePage();
+                        this.initHomeAnimations();
+                }
+                
+                // Re-initialize GSAP ScrollTrigger for new content
+                if (window.gsap && window.ScrollTrigger) {
+                    gsap.registerPlugin(ScrollTrigger);
+                    this.initScrollAnimations();
+                }
+            },
+            
+            initScrollAnimations() {
+                // Animate elements on scroll
+                gsap.utils.toArray('.module-card, .demo-card, .showcase-card').forEach((card, i) => {
+                    gsap.from(card, {
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top 85%',
+                            toggleActions: 'play none none none'
+                        },
+                        y: 50,
+                        opacity: 0,
+                        duration: 0.6,
+                        delay: i * 0.1,
+                        ease: 'power2.out'
+                    });
+                });
+            },
+
+            // ==========================================
+            // HOME PAGE
+            // ==========================================
+            getHomePage() {
+                return `
+                    <!-- Hero Section -->
+                    <section class="relative min-h-screen flex items-center overflow-hidden bg-slate-900">
+                        <!-- Background Elements -->
+                        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                            <div class="absolute top-20 left-10 w-72 h-72 bg-eden-500/20 rounded-full blur-3xl animate-pulse-slow"></div>
+                            <div class="absolute bottom-20 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s;"></div>
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-eden-500/5 via-transparent to-transparent"></div>
+                        </div>
+                        
+                        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 grid lg:grid-cols-2 gap-12 items-center">
+                            <!-- Left: Interactive Builder -->
+                            <div class="space-y-8 animate-slide-up">
+                                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-eden-500/10 border border-eden-500/20 text-eden-400 text-sm font-medium">
+                                    <span class="w-2 h-2 rounded-full bg-eden-400 animate-pulse"></span>
+                                    Now serving Aotearoa NZ
+                                </div>
+                                
+                                <h1 class="font-display text-5xl md:text-7xl font-bold leading-tight">
+                                    Build smarter.<br>
+                                    <span class="text-gradient">Launch faster.</span>
+                                </h1>
+                                
+                                <p class="text-xl text-slate-400 max-w-lg">
+                                    Buy the code, rent the module, or go custom. Web solutions that actually work—without the corporate fluff.
+                                </p>
+                                
+                                <!-- Interactive Pick Your Build -->
+                                <div class="glass rounded-2xl p-6 space-y-4 border border-slate-700/50">
+                                    <h3 class="font-display font-bold text-lg text-white mb-4">Pick your build</h3>
+                                    
+                                    <!-- Step 1: Type -->
+                                    <div class="space-y-2">
+                                        <label class="text-sm text-slate-400 font-medium">1. What are you building?</label>
+                                        <div class="grid grid-cols-2 gap-2" id="build-type">
+                                            ${['Website', 'Web App', 'Portal/Dashboard', 'Marketplace'].map((type, i) => `
+                                                <button onclick="heroBuilder.selectType('${type}')" 
+                                                    class="type-btn px-4 py-3 rounded-xl border border-slate-600 hover:border-eden-500 hover:bg-eden-500/10 transition-all text-sm font-medium ${i === 0 ? 'border-eden-500 bg-eden-500/10 text-eden-400' : 'text-slate-300'}"
+                                                    data-type="${type}">
+                                                    ${type}
+                                                </button>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Step 2: Industry -->
+                                    <div class="space-y-2">
+                                        <label class="text-sm text-slate-400 font-medium">2. Your industry</label>
+                                        <select id="industry-select" onchange="heroBuilder.updatePreview()" class="w-full bg-slate-800 border border-slate-600 rounded-xl px-4 py-3 text-white focus:border-eden-500 focus:outline-none transition-colors">
+                                            <option>Café / Restaurant</option>
+                                            <option>Trades & Construction</option>
+                                            <option>Iwi / Hapū / Marae</option>
+                                            <option>Professional Services</option>
+                                            <option>Retail / E-commerce</option>
+                                            <option>Health & Wellness</option>
+                                            <option>Education</option>
+                                            <option>Other</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Step 3: Goal -->
+                                    <div class="space-y-2">
+                                        <label class="text-sm text-slate-400 font-medium">3. Main goal</label>
+                                        <div class="flex flex-wrap gap-2" id="goal-tags">
+                                            ${['Leads', 'Bookings', 'Sales', 'Membership'].map((goal, i) => `
+                                                <button onclick="heroBuilder.selectGoal('${goal}')" 
+                                                    class="goal-btn px-4 py-2 rounded-full border border-slate-600 hover:border-accent hover:bg-accent/10 transition-all text-sm ${i === 0 ? 'border-accent bg-accent/10 text-accent' : 'text-slate-300'}"
+                                                    data-goal="${goal}">
+                                                    ${goal}
+                                                </button>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pt-4 flex gap-3">
+                                        <button onclick="router.navigate('quote')" class="flex-1 bg-eden-500 hover:bg-eden-400 text-slate-900 font-bold py-3 px-6 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-eden-500/25 flex items-center justify-center gap-2">
+                                            <span>Build with Eden AI</span>
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                                        </button>
+                                        <button onclick="router.navigate('modules')" class="px-6 py-3 rounded-xl border border-slate-600 hover:border-slate-400 text-slate-300 hover:text-white transition-all font-medium">
+                                            Browse Modules
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Right: Dynamic Mockup -->
+                            <div class="relative animate-slide-up" style="animation-delay: 0.2s;">
+                                <div class="device-mockup aspect-[4/3] bg-slate-800 shadow-2xl shadow-eden-500/20" id="hero-mockup">
+                                    <div class="absolute inset-0 p-8 pt-12 overflow-hidden">
+                                        <div id="mockup-content" class="h-full flex flex-col">
+                                            <!-- Dynamic content injected by JS -->
+                                            <div class="flex-1 glass rounded-xl p-6 space-y-4">
+                                                <div class="h-8 w-3/4 bg-eden-500/20 rounded-lg"></div>
+                                                <div class="h-4 w-full bg-slate-700/50 rounded"></div>
+                                                <div class="h-4 w-5/6 bg-slate-700/50 rounded"></div>
+                                                <div class="grid grid-cols-2 gap-4 mt-8">
+                                                    <div class="h-24 bg-eden-500/10 rounded-lg border border-eden-500/20"></div>
+                                                    <div class="h-24 bg-accent/10 rounded-lg border border-accent/20"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Floating badges -->
+                                <div class="absolute -top-4 -right-4 glass px-4 py-2 rounded-full border border-eden-500/30 animate-float">
+                                    <span class="text-eden-400 font-bold text-sm">⚡ Fast turnaround</span>
+                                </div>
+                                <div class="absolute -bottom-4 -left-4 glass px-4 py-2 rounded-full border border-accent/30 animate-float" style="animation-delay: 1s;">
+                                    <span class="text-accent font-bold text-sm">🥝 NZ Based</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Featured Showcase Section -->
+                    <section class="py-24 bg-slate-950">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
+                                <div>
+                                    <h2 class="font-display text-3xl md:text-4xl font-bold mb-2">Featured Work</h2>
+                                    <p class="text-slate-400">Real projects we've shipped for Kiwi businesses</p>
+                                </div>
+                                <button onclick="router.navigate('showcase')" class="text-eden-400 font-medium hover:text-eden-300 flex items-center gap-2 group">
+                                    View all projects
+                                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                </button>
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 gap-8">
+                                ${showcaseData.map(project => `
+                                    <div class="showcase-card glass rounded-2xl overflow-hidden border border-slate-800 hover:border-eden-500/50 group cursor-pointer" onclick="showcase.openPreview('${project.id}')">
+                                        <div class="aspect-video bg-gradient-to-br ${project.color} relative overflow-hidden">
+                                            <div class="absolute inset-0 bg-slate-900/20"></div>
+                                            <div class="absolute inset-0 flex items-center justify-center">
+                                                <span class="text-6xl">${project.icon}</span>
+                                            </div>
+                                            <div class="absolute top-4 right-4">
+                                                <span class="px-3 py-1 bg-slate-900/80 backdrop-blur rounded-full text-xs font-medium text-white border border-slate-700">
+                                                    ${project.type}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="p-6">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <h3 class="font-display text-xl font-bold text-white group-hover:text-eden-400 transition-colors">${project.title}</h3>
+                                                <span class="text-slate-500 text-sm">${project.year}</span>
+                                            </div>
+                                            <p class="text-eden-400 text-sm mb-2">${project.tagline}</p>
+                                            <p class="text-slate-400 text-sm mb-4 line-clamp-2">${project.description}</p>
+                                            <div class="flex flex-wrap gap-2 mb-4">
+                                                ${project.techStack.slice(0, 3).map(tech => `
+                                                    <span class="text-xs px-2 py-1 bg-slate-800 rounded text-slate-400">${tech}</span>
+                                                `).join('')}
+                                            </div>
+                                            <div class="flex items-center gap-2 text-accent text-sm font-medium group-hover:gap-3 transition-all">
+                                                <span>View Project</span>
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Time & Cost Estimator -->
+                    <section class="py-24 bg-slate-900 relative">
+                        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="text-center mb-12">
+                                <h2 class="font-display text-3xl md:text-4xl font-bold mb-4">Time & Cost Estimator</h2>
+                                <p class="text-slate-400">Slide to estimate your project scope</p>
+                            </div>
+                            
+                            <div class="glass rounded-3xl p-8 md:p-12 border border-slate-800">
+                                <!-- Pages Slider -->
+                                <div class="mb-10">
+                                    <div class="flex justify-between mb-4">
+                                        <label class="font-medium text-white">Pages / Screens</label>
+                                        <span class="text-eden-400 font-display font-bold text-xl" id="pages-value">5</span>
+                                    </div>
+                                    <input type="range" min="1" max="20" value="5" id="pages-slider" oninput="estimator.update()">
+                                    <div class="flex justify-between text-xs text-slate-500 mt-2">
+                                        <span>1 page</span>
+                                        <span>20+ pages</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Features Checkboxes -->
+                                <div class="mb-10">
+                                    <label class="font-medium text-white block mb-4">Key Features</label>
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3" id="features-grid">
+                                        ${[
+                                            {id: 'bookings', label: 'Bookings', icon: '📅'},
+                                            {id: 'payments', label: 'Payments', icon: '💳'},
+                                            {id: 'membership', label: 'Membership', icon: '👥'},
+                                            {id: 'dashboard', label: 'Admin Dashboard', icon: '📊'},
+                                            {id: 'marketplace', label: 'Marketplace', icon: '🏪'},
+                                            {id: 'cms', label: 'CMS', icon: '📝'}
+                                        ].map(f => `
+                                            <button onclick="estimator.toggleFeature('${f.id}')" 
+                                                id="feat-${f.id}"
+                                                class="feature-btn p-4 rounded-xl border border-slate-700 hover:border-eden-500/50 transition-all text-left group">
+                                                <div class="text-2xl mb-1 group-hover:scale-110 transition-transform">${f.icon}</div>
+                                                <div class="text-sm font-medium text-slate-300 group-hover:text-white">${f.label}</div>
+                                            </button>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                
+                                <!-- Results -->
+                                <div class="bg-slate-900/50 rounded-2xl p-6 border border-slate-800">
+                                    <div class="grid md:grid-cols-3 gap-6">
+                                        <div class="text-center">
+                                            <div class="text-slate-400 text-sm mb-1">Estimated Timeline</div>
+                                            <div class="font-display text-2xl font-bold text-white" id="timeline-est">2-3 weeks</div>
+                                        </div>
+                                        <div class="text-center border-l border-r border-slate-800">
+                                            <div class="text-slate-400 text-sm mb-1">Suggested Path</div>
+                                            <div class="font-display text-2xl font-bold text-eden-400" id="path-suggest">Rent Module</div>
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="text-slate-400 text-sm mb-1">Starting From</div>
+                                            <div class="font-display text-2xl font-bold text-accent" id="price-est">$499</div>
+                                        </div>
+                                    </div>
+                                    <button onclick="router.navigate('quote')" class="w-full mt-6 bg-white text-slate-900 font-bold py-4 rounded-xl hover:bg-slate-200 transition-colors">
+                                        Get Exact Quote
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Modules Grid -->
+                    <section class="py-24 bg-slate-950">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
+                                <div>
+                                    <h2 class="font-display text-3xl md:text-4xl font-bold mb-2">Ready-to-Deploy Modules</h2>
+                                    <p class="text-slate-400">Buy once or rent monthly. Your choice.</p>
+                                </div>
+                                <button onclick="router.navigate('modules')" class="text-eden-400 font-medium hover:text-eden-300 flex items-center gap-2 group">
+                                    View all modules
+                                    <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                </button>
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                ${modulesData.slice(0, 3).map(module => `
+                                    <div class="module-card glass rounded-2xl p-6 border border-slate-800 hover:border-eden-500/50 relative group">
+                                        ${module.popular ? '<div class="absolute -top-3 left-6 px-3 py-1 bg-eden-500 text-slate-900 text-xs font-bold rounded-full">POPULAR</div>' : ''}
+                                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-eden-500/20 to-accent/20 flex items-center justify-center mb-4 text-2xl">
+                                            ${module.category === 'Website Starter Kits' ? '🌐' : 
+                                              module.category === 'Booking Systems' ? '📅' : 
+                                              module.category === 'Ecommerce' ? '🛒' : 
+                                              module.category === 'Membership Portals' ? '🔐' : 
+                                              module.category === 'Admin Dashboards' ? '📊' : '🏪'}
+                                        </div>
+                                        <h3 class="font-display font-bold text-xl mb-2">${module.name}</h3>
+                                        <p class="text-slate-400 text-sm mb-4 line-clamp-2">${module.description}</p>
+                                        
+                                        <div class="space-y-3 mb-6">
+                                            <div class="flex justify-between items-center py-2 border-b border-slate-800">
+                                                <span class="text-slate-400 text-sm">Buy Code</span>
+                                                <span class="font-bold text-white">$${module.buyPrice.toLocaleString()}</span>
+                                            </div>
+                                            <div class="flex justify-between items-center py-2 border-b border-slate-800">
+                                                <span class="text-slate-400 text-sm">Rent</span>
+                                                <span class="font-bold text-eden-400">$${module.rentSetup} + $${module.rentMonthly}/mo</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex gap-2">
+                                            <button onclick="router.navigate('quote')" class="flex-1 bg-eden-500 hover:bg-eden-400 text-slate-900 font-bold py-2 rounded-lg transition-colors text-sm">
+                                                Get Started
+                                            </button>
+                                            <button onclick="alert('Demo coming soon!')" class="px-4 py-2 border border-slate-600 hover:border-slate-400 rounded-lg transition-colors text-sm text-slate-300">
+                                                Demo
+                                            </button>
+                                        </div>
+                                        
+                                        <!-- Expandable details -->
+                                        <div class="mt-4 pt-4 border-t border-slate-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <div class="flex flex-wrap gap-2">
+                                                ${module.techStack.map(tech => `<span class="text-xs px-2 py-1 bg-slate-800 rounded text-slate-400">${tech}</span>`).join('')}
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Social Proof / Guarantees -->
+                    <section class="py-24 bg-slate-900">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                                ${[
+                                    {icon: '⚡', title: 'Fast Turnaround', desc: 'Weeks, not months. Get online quickly.'},
+                                    {icon: '📦', title: 'Own Your Code', desc: 'Buy option means full ownership. No lock-in.'},
+                                    {icon: '🥝', title: 'NZ-Based Support', desc: 'Local team, local time zone, no offshore runaround.'},
+                                    {icon: '🔒', title: 'Security First', desc: 'Best practices built-in. SSL, backups, updates.'}
+                                ].map((item, i) => `
+                                    <div class="text-center p-6 rounded-2xl hover:bg-slate-800/50 transition-colors group">
+                                        <div class="text-4xl mb-4 transform group-hover:scale-110 transition-transform">${item.icon}</div>
+                                        <h3 class="font-display font-bold text-lg mb-2">${item.title}</h3>
+                                        <p class="text-slate-400 text-sm">${item.desc}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- CTA Section -->
+                    <section class="py-24 bg-gradient-to-b from-slate-900 to-slate-950">
+                        <div class="max-w-4xl mx-auto px-4 text-center">
+                            <h2 class="font-display text-4xl md:text-5xl font-bold mb-6">Ready to build something great?</h2>
+                            <p class="text-xl text-slate-400 mb-8 max-w-2xl mx-auto">Whether you want to buy, rent, or build custom, we'll help you choose the right path.</p>
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                                <button onclick="router.navigate('quote')" class="bg-eden-500 hover:bg-eden-400 text-slate-900 font-bold py-4 px-8 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg shadow-eden-500/25">
+                                    Start Your Project
+                                </button>
+                                <button onclick="router.navigate('contact')" class="border border-slate-600 hover:border-slate-400 text-white font-bold py-4 px-8 rounded-full text-lg transition-all">
+                                    Talk to a Human
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                `;
+            },
+
+            initHomeAnimations() {
+                // Initialize hero builder
+                window.heroBuilder = {
+                    selectedType: 'Website',
+                    selectedGoal: 'Leads',
+                    
+                    selectType(type) {
+                        this.selectedType = type;
+                        document.querySelectorAll('.type-btn').forEach(btn => {
+                            if(btn.dataset.type === type) {
+                                btn.classList.add('border-eden-500', 'bg-eden-500/10', 'text-eden-400');
+                                btn.classList.remove('text-slate-300');
+                            } else {
+                                btn.classList.remove('border-eden-500', 'bg-eden-500/10', 'text-eden-400');
+                                btn.classList.add('text-slate-300');
+                            }
+                        });
+                        this.updatePreview();
+                    },
+                    
+                    selectGoal(goal) {
+                        this.selectedGoal = goal;
+                        document.querySelectorAll('.goal-btn').forEach(btn => {
+                            if(btn.dataset.goal === goal) {
+                                btn.classList.add('border-accent', 'bg-accent/10', 'text-accent');
+                                btn.classList.remove('text-slate-300');
+                            } else {
+                                btn.classList.remove('border-accent', 'bg-accent/10', 'text-accent');
+                                btn.classList.add('text-slate-300');
+                            }
+                        });
+                        this.updatePreview();
+                    },
+                    
+                    updatePreview() {
+                        const industry = document.getElementById('industry-select').value;
+                        const mockup = document.getElementById('mockup-content');
+                        
+                        // Generate contextual preview
+                        const previews = {
+                            'Website': {
+                                'Leads': {color: 'eden', title: 'Get Your Free Quote', subtitle: 'Professional '+industry+' services'},
+                                'Bookings': {color: 'accent', title: 'Book Online Now', subtitle: 'Schedule your '+industry+' appointment'},
+                                'Sales': {color: 'eden', title: 'Shop Now', subtitle: 'Quality '+industry+' products'},
+                                'Membership': {color: 'accent', title: 'Join Our Community', subtitle: 'Exclusive '+industry+' benefits'}
+                            },
+                            'Web App': {
+                                'Leads': {color: 'accent', title: 'Dashboard', subtitle: 'Manage your '+industry+' leads'},
+                                'Bookings': {color: 'eden', title: 'Calendar App', subtitle: 'Smart scheduling system'},
+                                'Sales': {color: 'accent', title: 'Sales Platform', subtitle: 'Track & convert'},
+                                'Membership': {color: 'eden', title: 'Member Portal', subtitle: 'Access your account'}
+                            },
+                            'Portal/Dashboard': {
+                                'Leads': {color: 'eden', title: 'Admin Portal', subtitle: 'Lead management'},
+                                'Bookings': {color: 'accent', title: 'Booking Dashboard', subtitle: 'Overview & analytics'},
+                                'Sales': {color: 'eden', title: 'Sales Dashboard', subtitle: 'Real-time metrics'},
+                                'Membership': {color: 'accent', title: 'Member Admin', subtitle: 'User management'}
+                            },
+                            'Marketplace': {
+                                'Leads': {color: 'accent', title: 'Service Marketplace', subtitle: 'Find providers'},
+                                'Bookings': {color: 'eden', title: 'Booking Hub', subtitle: 'Multi-vendor bookings'},
+                                'Sales': {color: 'accent', title: 'Multi-vendor Store', subtitle: 'Shop from many'},
+                                'Membership': {color: 'eden', title: 'Vendor Portal', subtitle: 'Sell your services'}
+                            }
+                        };
+                        
+                        const p = previews[this.selectedType][this.selectedGoal];
+                        
+                        mockup.innerHTML = `
+                            <div class="h-full flex flex-col animate-fade-in">
+                                <div class="flex items-center gap-2 mb-6">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <div class="flex-1 glass rounded-xl p-6 space-y-4 border border-${p.color}-500/30 bg-${p.color}-500/5">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div class="w-8 h-8 rounded-lg bg-${p.color}-500/20"></div>
+                                        <div class="flex gap-2">
+                                            <div class="w-4 h-4 rounded-full bg-slate-700"></div>
+                                            <div class="w-4 h-4 rounded-full bg-slate-700"></div>
+                                        </div>
+                                    </div>
+                                    <div class="h-8 w-3/4 bg-${p.color}-500/30 rounded-lg"></div>
+                                    <div class="h-4 w-full bg-slate-700/30 rounded"></div>
+                                    <div class="h-4 w-5/6 bg-slate-700/30 rounded"></div>
+                                    <div class="grid grid-cols-2 gap-4 mt-8">
+                                        <div class="h-24 bg-${p.color}-500/20 rounded-lg border border-${p.color}-500/30 flex items-center justify-center text-${p.color}-400 font-bold text-xs">
+                                            ${p.title}
+                                        </div>
+                                        <div class="h-24 bg-slate-800 rounded-lg border border-slate-700 flex items-center justify-center text-slate-500 text-xs">
+                                            Feature
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 p-3 bg-${p.color}-500/20 rounded-lg text-center text-${p.color}-400 text-xs font-medium">
+                                        ${p.subtitle}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                };
+                
+                // Initialize estimator
+                window.estimator = {
+                    pages: 5,
+                    features: [],
+                    
+                    update() {
+                        this.pages = parseInt(document.getElementById('pages-slider').value);
+                        document.getElementById('pages-value').textContent = this.pages;
+                        this.calculate();
+                    },
+                    
+                    toggleFeature(feature) {
+                        const btn = document.getElementById('feat-' + feature);
+                        if(this.features.includes(feature)) {
+                            this.features = this.features.filter(f => f !== feature);
+                            btn.classList.remove('border-eden-500', 'bg-eden-500/10');
+                            btn.classList.add('border-slate-700');
+                        } else {
+                            this.features.push(feature);
+                            btn.classList.add('border-eden-500', 'bg-eden-500/10');
+                            btn.classList.remove('border-slate-700');
+                        }
+                        this.calculate();
+                    },
+                    
+                    calculate() {
+                        const complexity = this.features.length;
+                        let weeks = Math.ceil(this.pages / 3) + (complexity * 0.5);
+                        weeks = Math.max(1, Math.ceil(weeks));
+                        
+                        let timeline = weeks === 1 ? '1 week' : weeks <= 2 ? '1-2 weeks' : weeks <= 4 ? '2-4 weeks' : '1-2 months';
+                        document.getElementById('timeline-est').textContent = timeline;
+                        
+                        // Suggest path
+                        let path = 'Rent Module';
+                        let price = 499;
+                        
+                        if(complexity > 3 || this.pages > 10) {
+                            path = 'Custom Build';
+                            price = 5000 + (this.pages * 200) + (complexity * 1000);
+                        } else if(this.features.includes('marketplace')) {
+                            path = 'Buy Code';
+                            price = 8999;
+                        } else if(complexity === 0 && this.pages <= 5) {
+                            path = 'Rent Module';
+                            price = 499;
+                        } else {
+                            path = complexity > 1 ? 'Buy Code' : 'Rent Module';
+                            price = path === 'Buy Code' ? 2499 + (complexity * 500) : 499 + (complexity * 200);
+                        }
+                        
+                        document.getElementById('path-suggest').textContent = path;
+                        document.getElementById('price-est').textContent = '$' + price.toLocaleString();
+                    }
+                };
+                
+                // Initial preview update
+                setTimeout(() => {
+                    if (window.heroBuilder) {
+                        window.heroBuilder.updatePreview();
+                    }
+                }, 100);
+            },
+
+            // ==========================================
+            // SHOWCASE PAGE - Your Portfolio
+            // ==========================================
+            getShowcasePage() {
+                return `
+                    <section class="py-12 bg-slate-900 min-h-screen">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <!-- Header -->
+                            <div class="text-center mb-16">
+                                <h1 class="font-display text-4xl md:text-5xl font-bold mb-4">Our Work</h1>
+                                <p class="text-slate-400 text-lg max-w-2xl mx-auto">Real websites and applications we've built for businesses across New Zealand. See what we can do for you.</p>
+                            </div>
+                            
+                            <!-- Stats -->
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+                                ${[
+                                    {number: '2+', label: 'Projects Shipped'},
+                                    {number: '100%', label: 'Client Satisfaction'},
+                                    {number: '24/7', label: 'Support Available'},
+                                    {number: 'NZ', label: 'Local Team'}
+                                ].map(stat => `
+                                    <div class="glass rounded-2xl p-6 text-center border border-slate-800">
+                                        <div class="text-3xl md:text-4xl font-bold text-eden-400 mb-2">${stat.number}</div>
+                                        <div class="text-slate-400 text-sm">${stat.label}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <!-- Projects Grid -->
+                            <div class="space-y-12">
+                                ${showcaseData.map((project, index) => `
+                                    <div class="showcase-card glass rounded-3xl overflow-hidden border border-slate-800 hover:border-eden-500/50 transition-all">
+                                        <div class="grid lg:grid-cols-2 gap-0">
+                                            <!-- Preview Side -->
+                                            <div class="relative bg-slate-950 p-8 ${index % 2 === 1 ? 'lg:order-2' : ''}">
+                                                <div class="absolute inset-0 bg-gradient-to-br ${project.color} opacity-10"></div>
+                                                <div class="relative aspect-[16/10] rounded-xl overflow-hidden border border-slate-800 shadow-2xl">
+                                                    <iframe src="${project.url}" class="w-full h-full" sandbox="allow-same-origin allow-scripts" loading="lazy"></iframe>
+                                                    <div class="absolute inset-0 pointer-events-none border border-slate-700/50 rounded-xl"></div>
+                                                </div>
+                                                <div class="mt-4 flex justify-center">
+                                                    <button onclick="showcase.openModal('${project.id}')" class="text-sm text-slate-400 hover:text-white flex items-center gap-2 transition-colors">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                                                        Expand Preview
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Info Side -->
+                                            <div class="p-8 lg:p-12 flex flex-col justify-center ${index % 2 === 1 ? 'lg:order-1' : ''}">
+                                                <div class="flex items-center gap-3 mb-4">
+                                                    <span class="text-4xl">${project.icon}</span>
+                                                    <div>
+                                                        <span class="text-xs font-medium text-eden-400 uppercase tracking-wider">${project.type}</span>
+                                                        <h2 class="font-display text-3xl font-bold text-white">${project.title}</h2>
+                                                    </div>
+                                                </div>
+                                                
+                                                <p class="text-xl text-slate-300 mb-2">${project.tagline}</p>
+                                                <p class="text-slate-400 mb-6">${project.description}</p>
+                                                
+                                                <div class="space-y-4 mb-8">
+                                                    <div>
+                                                        <h4 class="text-sm font-medium text-slate-300 mb-2">Key Features</h4>
+                                                        <div class="flex flex-wrap gap-2">
+                                                            ${project.features.map(feat => `
+                                                                <span class="px-3 py-1 bg-slate-800 rounded-full text-xs text-slate-300 border border-slate-700">${feat}</span>
+                                                            `).join('')}
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div>
+                                                        <h4 class="text-sm font-medium text-slate-300 mb-2">Tech Stack</h4>
+                                                        <div class="flex flex-wrap gap-2">
+                                                            ${project.techStack.map(tech => `
+                                                                <span class="px-3 py-1 bg-eden-500/10 text-eden-400 rounded-full text-xs border border-eden-500/20">${tech}</span>
+                                                            `).join('')}
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="flex gap-6 text-sm">
+                                                        <div>
+                                                            <span class="text-slate-500">Industry:</span>
+                                                            <span class="text-slate-300 ml-1">${project.industry}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span class="text-slate-500">Year:</span>
+                                                            <span class="text-slate-300 ml-1">${project.year}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="flex gap-3">
+                                                    <a href="${project.url}" target="_blank" rel="noopener noreferrer" class="flex-1 bg-eden-500 hover:bg-eden-400 text-slate-900 font-bold py-3 px-6 rounded-xl transition-all text-center flex items-center justify-center gap-2">
+                                                        <span>Visit Live Site</span>
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                                    </a>
+                                                    <button onclick="router.navigate('quote')" class="px-6 py-3 border border-slate-600 hover:border-slate-400 rounded-xl text-slate-300 hover:text-white transition-all font-medium">
+                                                        Build Similar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            
+                            <!-- CTA -->
+                            <div class="mt-16 text-center glass rounded-3xl p-12 border border-slate-800">
+                                <h2 class="font-display text-3xl font-bold mb-4">Have a project in mind?</h2>
+                                <p class="text-slate-400 mb-6 max-w-xl mx-auto">We can build something similar for your business, customized to your exact needs.</p>
+                                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                                    <button onclick="router.navigate('quote')" class="bg-eden-500 hover:bg-eden-400 text-slate-900 font-bold py-3 px-8 rounded-full transition-all">
+                                        Start Your Project
+                                    </button>
+                                    <button onclick="router.navigate('contact')" class="border border-slate-600 hover:border-slate-400 text-white font-bold py-3 px-8 rounded-full transition-all">
+                                        Contact Us
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- Modal for expanded preview -->
+                    <div id="showcase-modal" class="fixed inset-0 z-50 hidden">
+                        <div class="absolute inset-0 bg-slate-950/90 backdrop-blur-sm" onclick="showcase.closeModal()"></div>
+                        <div class="absolute inset-4 md:inset-8 bg-slate-900 rounded-2xl overflow-hidden border border-slate-700 flex flex-col">
+                            <div class="flex items-center justify-between p-4 border-b border-slate-800">
+                                <h3 id="modal-title" class="font-display font-bold text-lg">Project Preview</h3>
+                                <button onclick="showcase.closeModal()" class="p-2 hover:bg-slate-800 rounded-lg transition-colors">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                </button>
+                            </div>
+                            <div class="flex-1 relative">
+                                <iframe id="modal-iframe" class="w-full h-full" sandbox="allow-same-origin allow-scripts"></iframe>
+                            </div>
+                            <div class="p-4 border-t border-slate-800 flex justify-between items-center">
+                                <span class="text-slate-400 text-sm">Live preview - interact with the site</span>
+                                <a id="modal-link" href="#" target="_blank" rel="noopener noreferrer" class="text-eden-400 hover:text-eden-300 font-medium flex items-center gap-2">
+                                    Open in new tab
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+
+            initShowcaseAnimations() {
+                window.showcase = {
+                    openModal(projectId) {
+                        const project = showcaseData.find(p => p.id === projectId);
+                        if (!project) return;
+                        
+                        document.getElementById('modal-title').textContent = project.title;
+                        document.getElementById('modal-iframe').src = project.url;
+                        document.getElementById('modal-link').href = project.url;
+                        document.getElementById('showcase-modal').classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+                    },
+                    
+                    closeModal() {
+                        document.getElementById('showcase-modal').classList.add('hidden');
+                        document.getElementById('modal-iframe').src = '';
+                        document.body.style.overflow = '';
+                    },
+                    
+                    openPreview(projectId) {
+                        this.openModal(projectId);
+                    }
+                };
+                
+                // Close modal on escape key
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        showcase.closeModal();
+                    }
+                });
+            },
+
+            // ==========================================
+            // MODULES STORE PAGE
+            // ==========================================
+            getModulesPage() {
+                return `
+                    <section class="py-12 bg-slate-900 min-h-screen">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="text-center mb-12">
+                                <h1 class="font-display text-4xl md:text-5xl font-bold mb-4">Modules Store</h1>
+                                <p class="text-slate-400 text-lg max-w-2xl mx-auto">Buy the code and own it forever, or rent with hosting included. All modules are production-ready.</p>
+                            </div>
+                            
+                            <!-- Filters -->
+                            <div class="flex flex-col md:flex-row gap-4 mb-8 sticky top-24 z-30 glass p-4 rounded-2xl border border-slate-800">
+                                <div class="flex-1 relative">
+                                    <input type="text" id="module-search" placeholder="Search modules..." 
+                                        class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 pl-10 text-white focus:border-eden-500 focus:outline-none"
+                                        oninput="moduleStore.search(this.value)">
+                                    <svg class="w-5 h-5 text-slate-500 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                </div>
+                                <select id="category-filter" onchange="moduleStore.filter()" class="bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-eden-500 focus:outline-none">
+                                    <option value="all">All Categories</option>
+                                    <option value="Website Starter Kits">Website Starter Kits</option>
+                                    <option value="Booking Systems">Booking Systems</option>
+                                    <option value="Ecommerce">Ecommerce</option>
+                                    <option value="Membership Portals">Membership Portals</option>
+                                    <option value="Admin Dashboards">Admin Dashboards</option>
+                                    <option value="Marketplace Module">Marketplace Module</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Modules Grid -->
+                            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="modules-grid">
+                                ${modulesData.map(module => this.createModuleCard(module)).join('')}
+                            </div>
+                        </div>
+                    </section>
+                `;
+            },
+            
+            createModuleCard(module) {
+                const iconMap = {
+                    'Website Starter Kits': '🌐',
+                    'Booking Systems': '📅',
+                    'Ecommerce': '🛒',
+                    'Membership Portals': '🔐',
+                    'Admin Dashboards': '📊',
+                    'Marketplace Module': '🏪'
+                };
+                
+                return `
+                    <div class="module-card glass rounded-2xl p-6 border border-slate-800 hover:border-eden-500/50 relative group" data-category="${module.category}" data-name="${module.name.toLowerCase()}">
+                        ${module.popular ? '<div class="absolute -top-3 left-6 px-3 py-1 bg-eden-500 text-slate-900 text-xs font-bold rounded-full">POPULAR</div>' : ''}
+                        
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-eden-500/20 to-accent/20 flex items-center justify-center text-3xl">
+                                ${iconMap[module.category] || '💎'}
+                            </div>
+                            <span class="text-xs font-medium text-slate-500 bg-slate-800 px-3 py-1 rounded-full">${module.category}</span>
+                        </div>
+                        
+                        <h3 class="font-display font-bold text-2xl mb-2">${module.name}</h3>
+                        <p class="text-slate-400 mb-6">${module.description}</p>
+                        
+                        <!-- Features -->
+                        <div class="mb-6">
+                            <div class="text-sm font-medium text-slate-300 mb-2">What's included:</div>
+                            <ul class="space-y-1">
+                                ${module.features.slice(0, 4).map(f => `
+                                    <li class="flex items-center gap-2 text-sm text-slate-400">
+                                        <svg class="w-4 h-4 text-eden-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                        ${f}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                        
+                        <!-- Tech Stack -->
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            ${module.techStack.map(tech => `<span class="text-xs px-2 py-1 bg-slate-800 rounded text-slate-400 border border-slate-700">${tech}</span>`).join('')}
+                        </div>
+                        
+                        <!-- Pricing -->
+                        <div class="grid grid-cols-2 gap-4 mb-6 p-4 bg-slate-800/50 rounded-xl">
+                            <div>
+                                <div class="text-xs text-slate-500 mb-1">Buy Code</div>
+                                <div class="font-bold text-xl text-white">$${module.buyPrice.toLocaleString()}</div>
+                                <div class="text-xs text-slate-500">One-time</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-500 mb-1">Rent</div>
+                                <div class="font-bold text-xl text-eden-400">$${module.rentSetup}</div>
+                                <div class="text-xs text-slate-500">+ $${module.rentMonthly}/mo</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="space-y-2">
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="moduleStore.selectOption('${module.id}', 'buy')" class="bg-white hover:bg-slate-200 text-slate-900 font-bold py-3 rounded-xl transition-colors">
+                                    Buy Code
+                                </button>
+                                <button onclick="moduleStore.selectOption('${module.id}', 'rent')" class="bg-eden-500 hover:bg-eden-400 text-slate-900 font-bold py-3 rounded-xl transition-colors">
+                                    Rent
+                                </button>
+                            </div>
+                            <button onclick="moduleStore.requestCustom('${module.id}')" class="w-full border border-slate-600 hover:border-slate-400 text-slate-300 py-2 rounded-xl transition-colors text-sm">
+                                Request Custom Changes
+                            </button>
+                            <button onclick="alert('Demo launching...')" class="w-full text-accent hover:text-accent-light text-sm font-medium py-2 flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                View Demo
+                            </button>
+                        </div>
+                    </div>
+                `;
+            },
+            
+            initModulesAnimations() {
+                window.moduleStore = {
+                    search(query) {
+                        const cards = document.querySelectorAll('.module-card');
+                        const lowerQuery = query.toLowerCase();
+                        cards.forEach(card => {
+                            const name = card.dataset.name;
+                            const category = card.dataset.category.toLowerCase();
+                            if(name.includes(lowerQuery) || category.includes(lowerQuery)) {
+                                card.style.display = 'block';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                    },
+                    
+                    filter() {
+                        const category = document.getElementById('category-filter').value;
+                        const cards = document.querySelectorAll('.module-card');
+                        cards.forEach(card => {
+                            if(category === 'all' || card.dataset.category === category) {
+                                card.style.display = 'block';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                    },
+                    
+                    selectOption(moduleId, type) {
+                        const module = modulesData.find(m => m.id === moduleId);
+                        alert(`Selected: ${module.name} - ${type === 'buy' ? 'Buy Code' : 'Rent'}\n\nTaking you to checkout...`);
+                        router.navigate('quote');
+                    },
+                    
+                    requestCustom(moduleId) {
+                        const module = modulesData.find(m => m.id === moduleId);
+                        alert(`Requesting custom changes for ${module.name}\n\nWe'll contact you to discuss modifications.`);
+                        router.navigate('quote');
+                    }
+                };
+            },
+
+            // ==========================================
+            // PRICING PAGE
+            // ==========================================
+            getPricingPage() {
+                return `
+                    <section class="py-12 bg-slate-900 min-h-screen">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="text-center mb-12">
+                                <h1 class="font-display text-4xl md:text-5xl font-bold mb-4">Simple, Transparent Pricing</h1>
+                                <p class="text-slate-400 text-lg">Choose how you want to work with us</p>
+                            </div>
+                            
+                            <!-- Hosting Toggle -->
+                            <div class="flex justify-center mb-12">
+                                <div class="glass rounded-full p-1 flex items-center gap-2 border border-slate-800">
+                                    <button id="hosting-self" onclick="pricingToggle.setHosting('self')" class="px-6 py-2 rounded-full bg-eden-500 text-slate-900 font-bold transition-all">You Host</button>
+                                    <button id="hosting-eden" onclick="pricingToggle.setHosting('eden')" class="px-6 py-2 rounded-full text-slate-400 hover:text-white transition-all">Eden Managed</button>
+                                </div>
+                            </div>
+                            
+                            <!-- Pricing Cards -->
+                            <div class="grid md:grid-cols-3 gap-8 mb-16">
+                                <!-- Buy Code -->
+                                <div class="glass rounded-3xl p-8 border border-slate-800 hover:border-eden-500/50 transition-all relative">
+                                    <div class="absolute -top-4 left-8 px-4 py-1 bg-slate-800 border border-slate-700 rounded-full text-sm font-medium text-slate-300">Own It</div>
+                                    <h3 class="font-display text-2xl font-bold mb-2">Buy the Code</h3>
+                                    <p class="text-slate-400 mb-6">One-time purchase. You own everything.</p>
+                                    
+                                    <div class="mb-6">
+                                        <span class="text-4xl font-bold text-white">$2,499</span>
+                                        <span class="text-slate-500">+</span>
+                                    </div>
+                                    
+                                    <ul class="space-y-3 mb-8">
+                                        ${[
+                                            'Full source code ownership',
+                                            'Lifetime license',
+                                            'Deploy anywhere',
+                                            'Optional setup service ($499)',
+                                            'Optional maintenance ($99/mo)',
+                                            'Community support'
+                                        ].map(item => `
+                                            <li class="flex items-start gap-3 text-slate-300">
+                                                <svg class="w-5 h-5 text-eden-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                                ${item}
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                    
+                                    <button onclick="router.navigate('modules')" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 rounded-xl transition-colors border border-slate-700">
+                                        Browse Modules
+                                    </button>
+                                </div>
+                                
+                                <!-- Rent Module -->
+                                <div class="glass rounded-3xl p-8 border-2 border-eden-500 relative transform md:scale-105 shadow-2xl shadow-eden-500/20">
+                                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 bg-eden-500 text-slate-900 rounded-full text-sm font-bold">Most Popular</div>
+                                    <h3 class="font-display text-2xl font-bold mb-2">Rent a Module</h3>
+                                    <p class="text-slate-400 mb-6">Low upfront, includes hosting & updates.</p>
+                                    
+                                    <div class="mb-6">
+                                        <span class="text-4xl font-bold text-white">$499</span>
+                                        <span class="text-slate-500">setup</span>
+                                        <div class="text-eden-400 font-medium">+ $89-349/mo</div>
+                                    </div>
+                                    
+                                    <ul class="space-y-3 mb-8">
+                                        ${[
+                                            'Lower upfront cost',
+                                            'Includes managed hosting',
+                                            'Automatic updates',
+                                            'Priority NZ support',
+                                            'SSL & backups included',
+                                            'Cancel anytime',
+                                            'Data export on exit'
+                                        ].map(item => `
+                                            <li class="flex items-start gap-3 text-slate-300">
+                                                <svg class="w-5 h-5 text-eden-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                                ${item}
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                    
+                                    <button onclick="router.navigate('modules')" class="w-full bg-eden-500 hover:bg-eden-400 text-slate-900 font-bold py-4 rounded-xl transition-colors">
+                                        View Modules
+                                    </button>
+                                </div>
+                                
+                                <!-- Custom Build -->
+                                <div class="glass rounded-3xl p-8 border border-slate-800 hover:border-accent/50 transition-all relative">
+                                    <div class="absolute -top-4 left-8 px-4 py-1 bg-slate-800 border border-slate-700 rounded-full text-sm font-medium text-slate-300">Bespoke</div>
+                                    <h3 class="font-display text-2xl font-bold mb-2">Custom Build</h3>
+                                    <p class="text-slate-400 mb-6">Built exactly to your specifications.</p>
+                                    
+                                    <div class="mb-6">
+                                        <span class="text-4xl font-bold text-white">Custom</span>
+                                        <div class="text-accent font-medium">Quote based</div>
+                                    </div>
+                                    
+                                    <ul class="space-y-3 mb-8">
+                                        ${[
+                                            'Discovery workshop',
+                                            'Fixed milestones',
+                                            'Dedicated developer',
+                                            'Bespoke design',
+                                            'Custom integrations',
+                                            'Training included',
+                                            '3-month warranty'
+                                        ].map(item => `
+                                            <li class="flex items-start gap-3 text-slate-300">
+                                                <svg class="w-5 h-5 text-accent flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                                ${item}
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                    
+                                    <button onclick="router.navigate('quote')" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 rounded-xl transition-colors border border-slate-700">
+                                        Get Quote
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Hosting Details -->
+                            <div id="hosting-details-self" class="glass rounded-2xl p-8 border border-slate-800">
+                                <h3 class="font-display text-xl font-bold mb-4 flex items-center gap-2">
+                                    <span class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-lg">🏠</span>
+                                    Self-Hosting Details
+                                </h3>
+                                <div class="grid md:grid-cols-2 gap-6 text-slate-300">
+                                    <div>
+                                        <h4 class="font-bold text-white mb-2">What you need to provide:</h4>
+                                        <ul class="space-y-2 text-sm">
+                                            <li>• Server access (SSH/FTP credentials)</li>
+                                            <li>• Domain name and DNS access</li>
+                                            <li>• Environment requirements (Node.js, DB)</li>
+                                            <li>• SSL certificate (or we can help setup)</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-white mb-2">What we do:</h4>
+                                        <ul class="space-y-2 text-sm">
+                                            <li>• Code deployment</li>
+                                            <li>• Initial configuration</li>
+                                            <li>• Basic server setup guidance</li>
+                                            <li>• Deployment documentation</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="hosting-details-eden" class="glass rounded-2xl p-8 border border-slate-800 hidden">
+                                <h3 class="font-display text-xl font-bold mb-4 flex items-center gap-2">
+                                    <span class="w-8 h-8 rounded-full bg-eden-500/20 flex items-center justify-center text-lg">☁️</span>
+                                    Eden Managed Hosting
+                                </h3>
+                                <div class="grid md:grid-cols-3 gap-6">
+                                    <div class="text-center p-4">
+                                        <div class="text-3xl mb-2">🔒</div>
+                                        <h4 class="font-bold text-white mb-1">Security First</h4>
+                                        <p class="text-sm text-slate-400">SSL certificates, WAF, DDoS protection, regular security audits</p>
+                                    </div>
+                                    <div class="text-center p-4">
+                                        <div class="text-3xl mb-2">💾</div>
+                                        <h4 class="font-bold text-white mb-1">Daily Backups</h4>
+                                        <p class="text-sm text-slate-400">Automated backups with 30-day retention, one-click restore</p>
+                                    </div>
+                                    <div class="text-center p-4">
+                                        <div class="text-3xl mb-2">⚡</div>
+                                        <h4 class="font-bold text-white mb-1">CDN & Speed</h4>
+                                        <p class="text-sm text-slate-400">Global CDN, image optimization, caching layers</p>
+                                    </div>
+                                </div>
+                                <div class="mt-6 pt-6 border-t border-slate-800 text-center">
+                                    <p class="text-slate-400">Managed hosting add-on: <span class="text-white font-bold">$49-149/mo</span> depending on traffic & storage needs</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+            },
+
+            // ==========================================
+            // HOW IT WORKS PAGE
+            // ==========================================
+            getHowItWorksPage() {
+                return `
+                    <section class="py-12 bg-slate-900 min-h-screen">
+                        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="text-center mb-16">
+                                <h1 class="font-display text-4xl md:text-5xl font-bold mb-4">How It Works</h1>
+                                <p class="text-slate-400 text-lg">From idea to launch in three simple steps</p>
+                            </div>
+                            
+                            <!-- Steps -->
+                            <div class="space-y-12 relative">
+                                <!-- Connecting line -->
+                                <div class="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-eden-500 via-accent to-eden-500 md:-translate-x-1/2 hidden md:block"></div>
+                                
+                                <!-- Step 1 -->
+                                <div class="relative grid md:grid-cols-2 gap-8 items-center">
+                                    <div class="md:text-right md:pr-12 order-2 md:order-1">
+                                        <div class="glass rounded-2xl p-6 border border-slate-800 inline-block text-left">
+                                            <h3 class="font-display text-2xl font-bold mb-2 text-eden-400">1. Choose Your Path</h3>
+                                            <p class="text-slate-400 mb-4">Buy, rent, or go custom. We'll help you decide based on your budget, timeline, and technical needs.</p>
+                                            <ul class="space-y-2 text-sm text-slate-300">
+                                                <li class="flex items-center gap-2 md:justify-end">
+                                                    <span>Buy for full ownership</span>
+                                                    <svg class="w-4 h-4 text-eden-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                                </li>
+                                                <li class="flex items-center gap-2 md:justify-end">
+                                                    <span>Rent for low upfront</span>
+                                                    <svg class="w-4 h-4 text-eden-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                                </li>
+                                                <li class="flex items-center gap-2 md:justify-end">
+                                                    <span>Custom for unique needs</span>
+                                                    <svg class="w-4 h-4 text-eden-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-center md:justify-start order-1 md:order-2 relative">
+                                        <div class="w-16 h-16 rounded-full bg-eden-500 text-slate-900 font-display font-bold text-2xl flex items-center justify-center relative z-10 shadow-lg shadow-eden-500/50">1</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Step 2 -->
+                                <div class="relative grid md:grid-cols-2 gap-8 items-center">
+                                    <div class="flex justify-center md:justify-end relative">
+                                        <div class="w-16 h-16 rounded-full bg-accent text-slate-900 font-display font-bold text-2xl flex items-center justify-center relative z-10 shadow-lg shadow-accent/50">2</div>
+                                    </div>
+                                    <div class="md:pl-12">
+                                        <div class="glass rounded-2xl p-6 border border-slate-800">
+                                            <h3 class="font-display text-2xl font-bold mb-2 text-accent">2. Configure & Brand</h3>
+                                            <p class="text-slate-400 mb-4">We set up your chosen module with your branding, content, and any custom features you need.</p>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div class="bg-slate-800/50 p-3 rounded-lg text-center">
+                                                    <div class="text-2xl mb-1">🎨</div>
+                                                    <div class="text-xs text-slate-300">Your branding</div>
+                                                </div>
+                                                <div class="bg-slate-800/50 p-3 rounded-lg text-center">
+                                                    <div class="text-2xl mb-1">✏️</div>
+                                                    <div class="text-xs text-slate-300">Your content</div>
+                                                </div>
+                                                <div class="bg-slate-800/50 p-3 rounded-lg text-center">
+                                                    <div class="text-2xl mb-1">🔌</div>
+                                                    <div class="text-xs text-slate-300">Integrations</div>
+                                                </div>
+                                                <div class="bg-slate-800/50 p-3 rounded-lg text-center">
+                                                    <div class="text-2xl mb-1">⚙️</div>
+                                                    <div class="text-xs text-slate-300">Settings</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Step 3 -->
+                                <div class="relative grid md:grid-cols-2 gap-8 items-center">
+                                    <div class="md:text-right md:pr-12 order-2 md:order-1">
+                                        <div class="glass rounded-2xl p-6 border border-slate-800 inline-block text-left">
+                                            <h3 class="font-display text-2xl font-bold mb-2 text-eden-400">3. Launch & Support</h3>
+                                            <p class="text-slate-400 mb-4">We deploy to your chosen hosting environment and provide training and ongoing support.</p>
+                                            <div class="space-y-2">
+                                                <div class="flex items-center gap-2">
+                                                    <span class="w-6 h-6 rounded-full bg-eden-500/20 text-eden-400 flex items-center justify-center text-xs">✓</span>
+                                                    <span class="text-sm text-slate-300">Domain & SSL setup</span>
+                                                </div>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="w-6 h-6 rounded-full bg-eden-500/20 text-eden-400 flex items-center justify-center text-xs">✓</span>
+                                                    <span class="text-sm text-slate-300">Team training session</span>
+                                                </div>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="w-6 h-6 rounded-full bg-eden-500/20 text-eden-400 flex items-center justify-center text-xs">✓</span>
+                                                    <span class="text-sm text-slate-300">Documentation provided</span>
+                                                </div>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="w-6 h-6 rounded-full bg-eden-500/20 text-eden-400 flex items-center justify-center text-xs">✓</span>
+                                                    <span class="text-sm text-slate-300">Ongoing NZ support</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-center md:justify-start order-1 md:order-2 relative">
+                                        <div class="w-16 h-16 rounded-full bg-eden-500 text-slate-900 font-display font-bold text-2xl flex items-center justify-center relative z-10 shadow-lg shadow-eden-500/50">3</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Timeline Expectations -->
+                            <div class="mt-20 glass rounded-2xl p-8 border border-slate-800">
+                                <h3 class="font-display text-2xl font-bold mb-6 text-center">Timeline Expectations</h3>
+                                <div class="grid md:grid-cols-3 gap-6">
+                                    <div class="text-center p-4 border border-slate-800 rounded-xl">
+                                        <div class="text-3xl font-bold text-eden-400 mb-2">1-2 weeks</div>
+                                        <div class="font-medium text-white mb-1">Rent a Module</div>
+                                        <p class="text-sm text-slate-400">Standard configuration with your branding</p>
+                                    </div>
+                                    <div class="text-center p-4 border border-slate-800 rounded-xl">
+                                        <div class="text-3xl font-bold text-accent mb-2">2-4 weeks</div>
+                                        <div class="font-medium text-white mb-1">Buy & Setup</div>
+                                        <p class="text-sm text-slate-400">Code delivery + deployment assistance</p>
+                                    </div>
+                                    <div class="text-center p-4 border border-slate-800 rounded-xl">
+                                        <div class="text-3xl font-bold text-white mb-2">4-12 weeks</div>
+                                        <div class="font-medium text-white mb-1">Custom Build</div>
+                                        <p class="text-sm text-slate-400">Depends on scope and complexity</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+            },
+
+            // ==========================================
+            // HOSTING PAGE
+            // ==========================================
+            getHostingPage() {
+                return `
+                    <section class="py-12 bg-slate-900 min-h-screen">
+                        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="text-center mb-12">
+                                <h1 class="font-display text-4xl md:text-5xl font-bold mb-4">Hosting Options</h1>
+                                <p class="text-slate-400 text-lg">Choose who manages your server infrastructure</p>
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 gap-8 mb-12">
+                                <!-- Self Host -->
+                                <div class="glass rounded-3xl p-8 border border-slate-800 hover:border-slate-600 transition-all">
+                                    <div class="w-14 h-14 rounded-2xl bg-slate-800 flex items-center justify-center text-3xl mb-6">🏠</div>
+                                    <h2 class="font-display text-2xl font-bold mb-4">You Provide the Server</h2>
+                                    <p class="text-slate-400 mb-6">Use your existing infrastructure or preferred hosting provider. We deploy the code to your environment.</p>
+                                    
+                                    <div class="space-y-4 mb-8">
+                                        <div class="flex items-start gap-3">
+                                            <svg class="w-5 h-5 text-eden-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            <div>
+                                                <div class="font-medium text-white">Full Control</div>
+                                                <div class="text-sm text-slate-400">You own and manage the server completely</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <svg class="w-5 h-5 text-eden-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            <div>
+                                                <div class="font-medium text-white">Use Existing Infrastructure</div>
+                                                <div class="text-sm text-slate-400">Leverage servers you already pay for</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <svg class="w-5 h-5 text-eden-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            <div>
+                                                <div class="font-medium text-white">No Monthly Hosting Fee</div>
+                                                <div class="text-sm text-slate-400">Just the one-time deployment (if needed)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-slate-800/50 rounded-xl p-4 mb-6">
+                                        <h4 class="font-bold text-white mb-2 text-sm">What we need from you:</h4>
+                                        <ul class="text-sm text-slate-400 space-y-1">
+                                            <li>• SSH/FTP access credentials</li>
+                                            <li>• Database access (MySQL/PostgreSQL)</li>
+                                            <li>• Domain DNS access for configuration</li>
+                                            <li>• Server environment details (OS, Node version)</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="text-center">
+                                        <div class="text-3xl font-bold text-white mb-1">$0</div>
+                                        <div class="text-slate-400 text-sm">Hosting fee (you pay your provider)</div>
+                                        <div class="text-xs text-slate-500 mt-1">+$299 one-time deployment if required</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Eden Managed -->
+                                <div class="glass rounded-3xl p-8 border-2 border-eden-500 relative overflow-hidden">
+                                    <div class="absolute top-0 right-0 bg-eden-500 text-slate-900 text-xs font-bold px-3 py-1 rounded-bl-lg">RECOMMENDED</div>
+                                    <div class="w-14 h-14 rounded-2xl bg-eden-500/20 flex items-center justify-center text-3xl mb-6">☁️</div>
+                                    <h2 class="font-display text-2xl font-bold mb-4">Eden Managed Hosting</h2>
+                                    <p class="text-slate-400 mb-6">We handle everything—servers, security, backups, and updates. You focus on your business.</p>
+                                    
+                                    <div class="space-y-4 mb-8">
+                                        <div class="flex items-start gap-3">
+                                            <svg class="w-5 h-5 text-eden-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            <div>
+                                                <div class="font-medium text-white">Fully Managed</div>
+                                                <div class="text-sm text-slate-400">We monitor and maintain 24/7</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <svg class="w-5 h-5 text-eden-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            <div>
+                                                <div class="font-medium text-white">Enterprise Security</div>
+                                                <div class="text-sm text-slate-400">SSL, WAF, DDoS protection, audits</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <svg class="w-5 h-5 text-eden-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            <div>
+                                                <div class="font-medium text-white">Daily Backups</div>
+                                                <div class="text-sm text-slate-400">30-day retention, one-click restore</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <svg class="w-5 h-5 text-eden-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            <div>
+                                                <div class="font-medium text-white">Speed Optimized</div>
+                                                <div class="text-sm text-slate-400">CDN, caching, image optimization</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-eden-500/10 rounded-xl p-4 mb-6 border border-eden-500/20">
+                                        <h4 class="font-bold text-eden-400 mb-2 text-sm">What's included:</h4>
+                                        <ul class="text-sm text-slate-300 space-y-1">
+                                            <li>• AWS/Azure cloud infrastructure</li>
+                                            <li>• Automatic security patches</li>
+                                            <li>• Uptime monitoring & alerts</li>
+                                            <li>• Monthly performance reports</li>
+                                            <li>• NZ-based support response</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="text-center">
+                                        <div class="text-3xl font-bold text-eden-400 mb-1">$49-149<span class="text-lg text-slate-400">/mo</span></div>
+                                        <div class="text-slate-400 text-sm">Based on traffic & storage</div>
+                                        <div class="text-xs text-slate-500 mt-1">Free setup with rental modules</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Comparison Table -->
+                            <div class="glass rounded-2xl p-8 border border-slate-800 overflow-x-auto">
+                                <h3 class="font-display text-xl font-bold mb-6">Feature Comparison</h3>
+                                <table class="w-full text-left">
+                                    <thead>
+                                        <tr class="border-b border-slate-700">
+                                            <th class="pb-4 text-slate-400 font-medium">Feature</th>
+                                            <th class="pb-4 text-center text-slate-400 font-medium">You Host</th>
+                                            <th class="pb-4 text-center text-eden-400 font-medium">Eden Managed</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-sm">
+                                        ${[
+                                            ['Server maintenance', 'You', 'Eden'],
+                                            ['Security patches', 'You', 'Eden'],
+                                            ['SSL certificates', 'You setup', 'Auto-renewing'],
+                                            ['Daily backups', 'You configure', 'Included'],
+                                            ['CDN & caching', 'Extra cost', 'Included'],
+                                            ['Uptime monitoring', 'Extra cost', '24/7 included'],
+                                            ['Support response', 'Best effort', 'Priority NZ support'],
+                                            ['Scaling/traffic spikes', 'You manage', 'Auto-scaling']
+                                        ].map(([feature, self, eden]) => `
+                                            <tr class="border-b border-slate-800">
+                                                <td class="py-4 text-slate-300">${feature}</td>
+                                                <td class="py-4 text-center text-slate-400">${self}</td>
+                                                <td class="py-4 text-center text-eden-400 font-medium">${eden}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                `;
+            },
+
+            // ==========================================
+            // QUOTE FUNNEL PAGE
+            // ==========================================
+            getQuotePage() {
+                return `
+                    <section class="py-12 bg-slate-900 min-h-screen">
+                        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="text-center mb-8">
+                                <h1 class="font-display text-4xl md:text-5xl font-bold mb-4">Get Your Quote</h1>
+                                <p class="text-slate-400">Tell us about your project and we'll get back within 24 hours</p>
+                            </div>
+                            
+                            <!-- Progress Bar -->
+                            <div class="mb-8">
+                                <div class="flex justify-between text-sm text-slate-400 mb-2">
+                                    <span>Step <span id="current-step">1</span> of 5</span>
+                                    <span id="step-name">Project Type</span>
+                                </div>
+                                <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+                                    <div id="progress-bar" class="h-full bg-gradient-to-r from-eden-500 to-accent transition-all duration-500" style="width: 20%"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Form Steps -->
+                            <div class="glass rounded-3xl p-8 border border-slate-800 min-h-[500px]">
+                                <form id="quote-form" onsubmit="quoteFunnel.submit(event)">
+                                    
+                                    <!-- Step 1: Project Basics -->
+                                    <div id="step-1" class="step-content">
+                                        <h2 class="font-display text-2xl font-bold mb-6">What are you building?</h2>
+                                        <div class="grid gap-4">
+                                            ${[
+                                                {id: 'website', label: 'Website', desc: 'Brochure, marketing, or informational site', icon: '🌐'},
+                                                {id: 'webapp', label: 'Web Application', desc: 'Interactive app with user accounts', icon: '⚡'},
+                                                {id: 'portal', label: 'Portal / Dashboard', desc: 'Internal tools or client dashboards', icon: '📊'},
+                                                {id: 'marketplace', label: 'Marketplace', desc: 'Multi-vendor platform', icon: '🏪'},
+                                                {id: 'ecommerce', label: 'E-commerce', desc: 'Online store with payments', icon: '🛒'},
+                                                {id: 'other', label: 'Something Else', desc: 'Describe your unique project', icon: '💡'}
+                                            ].map(opt => `
+                                                <label class="flex items-center gap-4 p-4 rounded-xl border border-slate-700 hover:border-eden-500 cursor-pointer transition-all group">
+                                                    <input type="radio" name="project_type" value="${opt.id}" class="w-5 h-5 text-eden-500 focus:ring-eden-500 bg-slate-800 border-slate-600" onchange="quoteFunnel.next()">
+                                                    <span class="text-2xl">${opt.icon}</span>
+                                                    <div>
+                                                        <div class="font-medium text-white group-hover:text-eden-400 transition-colors">${opt.label}</div>
+                                                        <div class="text-sm text-slate-400">${opt.desc}</div>
+                                                    </div>
+                                                </label>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Step 2: Acquisition Model -->
+                                    <div id="step-2" class="step-content hidden">
+                                        <h2 class="font-display text-2xl font-bold mb-6">How do you want to proceed?</h2>
+                                        <div class="grid gap-4">
+                                            ${[
+                                                {id: 'rent', label: 'Rent a Module', desc: 'Low upfront, includes hosting & updates', price: 'From $499 setup'},
+                                                {id: 'buy', label: 'Buy the Code', desc: 'Own it forever, one-time payment', price: 'From $2,499'},
+                                                {id: 'custom', label: 'Custom Build', desc: 'Built to your exact specifications', price: 'Custom quote'}
+                                            ].map(opt => `
+                                                <label class="flex items-center justify-between p-4 rounded-xl border border-slate-700 hover:border-eden-500 cursor-pointer transition-all group">
+                                                    <div class="flex items-center gap-4">
+                                                        <input type="radio" name="acquisition" value="${opt.id}" class="w-5 h-5 text-eden-500 focus:ring-eden-500 bg-slate-800 border-slate-600" onchange="quoteFunnel.next()">
+                                                        <div>
+                                                            <div class="font-medium text-white group-hover:text-eden-400 transition-colors">${opt.label}</div>
+                                                            <div class="text-sm text-slate-400">${opt.desc}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="text-right">
+                                                        <div class="text-eden-400 font-bold">${opt.price}</div>
+                                                    </div>
+                                                </label>
+                                            `).join('')}
+                                        </div>
+                                        <button type="button" onclick="quoteFunnel.prev()" class="mt-6 text-slate-400 hover:text-white flex items-center gap-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                                            Back
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Step 3: Features & Modules -->
+                                    <div id="step-3" class="step-content hidden">
+                                        <h2 class="font-display text-2xl font-bold mb-6">What do you need?</h2>
+                                        <div class="grid grid-cols-2 gap-3 mb-6">
+                                            ${[
+                                                {id: 'cms', label: 'CMS / Blog'},
+                                                {id: 'bookings', label: 'Bookings'},
+                                                {id: 'payments', label: 'Payments'},
+                                                {id: 'membership', label: 'Membership'},
+                                                {id: 'dashboard', label: 'Admin Dashboard'},
+                                                {id: 'api', label: 'API Integration'},
+                                                {id: 'search', label: 'Search'},
+                                                {id: 'multilang', label: 'Multi-language'}
+                                            ].map(feat => `
+                                                <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-700 hover:border-eden-500 cursor-pointer transition-all">
+                                                    <input type="checkbox" name="features" value="${feat.id}" class="w-4 h-4 rounded text-eden-500 focus:ring-eden-500 bg-slate-800 border-slate-600">
+                                                    <span class="text-slate-300 text-sm">${feat.label}</span>
+                                                </label>
+                                            `).join('')}
+                                        </div>
+                                        <div class="mb-6">
+                                            <label class="block text-sm font-medium text-slate-300 mb-2">Tell us more about your requirements</label>
+                                            <textarea name="details" rows="3" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-eden-500 focus:outline-none" placeholder="Any specific functionality, integrations, or special requirements..."></textarea>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <button type="button" onclick="quoteFunnel.prev()" class="text-slate-400 hover:text-white flex items-center gap-2">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                                                Back
+                                            </button>
+                                            <button type="button" onclick="quoteFunnel.next()" class="bg-eden-500 hover:bg-eden-400 text-slate-900 font-bold py-2 px-6 rounded-lg transition-colors">
+                                                Continue
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Step 4: Hosting & Budget -->
+                                    <div id="step-4" class="step-content hidden">
+                                        <h2 class="font-display text-2xl font-bold mb-6">Hosting & Budget</h2>
+                                        
+                                        <div class="space-y-6">
+                                            <div>
+                                                <label class="block text-sm font-medium text-slate-300 mb-3">Hosting preference</label>
+                                                <div class="grid grid-cols-2 gap-4">
+                                                    <label class="flex flex-col items-center p-4 rounded-xl border border-slate-700 hover:border-eden-500 cursor-pointer transition-all">
+                                                        <input type="radio" name="hosting" value="self" class="w-4 h-4 text-eden-500 mb-2">
+                                                        <span class="font-medium text-white">I'll host it</span>
+                                                        <span class="text-xs text-slate-400">Use my own server</span>
+                                                    </label>
+                                                    <label class="flex flex-col items-center p-4 rounded-xl border border-slate-700 hover:border-eden-500 cursor-pointer transition-all">
+                                                        <input type="radio" name="hosting" value="eden" class="w-4 h-4 text-eden-500 mb-2">
+                                                        <span class="font-medium text-white">Eden Managed</span>
+                                                        <span class="text-xs text-slate-400">+$49-149/mo</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            
+                                            <div>
+                                                <label class="block text-sm font-medium text-slate-300 mb-3">Budget range</label>
+                                                <select name="budget" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-eden-500 focus:outline-none">
+                                                    <option value="">Select budget range...</option>
+                                                    <option value="under5k">Under $5,000</option>
+                                                    <option value="5k-10k">$5,000 - $10,000</option>
+                                                    <option value="10k-25k">$10,000 - $25,000</option>
+                                                    <option value="25k-50k">$25,000 - $50,000</option>
+                                                    <option value="50k+">$50,000+</option>
+                                                </select>
+                                            </div>
+                                            
+                                            <div>
+                                                <label class="block text-sm font-medium text-slate-300 mb-3">Timeline</label>
+                                                <select name="timeline" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-eden-500 focus:outline-none">
+                                                    <option value="">When do you need it?</option>
+                                                    <option value="asap">ASAP (Rush)</option>
+                                                    <option value="1month">Within 1 month</option>
+                                                    <option value="3months">1-3 months</option>
+                                                    <option value="6months">3-6 months</option>
+                                                    <option value="flexible">Flexible</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex justify-between mt-8">
+                                            <button type="button" onclick="quoteFunnel.prev()" class="text-slate-400 hover:text-white flex items-center gap-2">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                                                Back
+                                            </button>
+                                            <button type="button" onclick="quoteFunnel.next()" class="bg-eden-500 hover:bg-eden-400 text-slate-900 font-bold py-2 px-6 rounded-lg transition-colors">
+                                                Continue
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Step 5: Contact -->
+                                    <div id="step-5" class="step-content hidden">
+                                        <h2 class="font-display text-2xl font-bold mb-6">Your Details</h2>
+                                        
+                                        <div class="space-y-4">
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-slate-300 mb-2">First Name</label>
+                                                    <input type="text" name="first_name" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-eden-500 focus:outline-none">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-slate-300 mb-2">Last Name</label>
+                                                    <input type="text" name="last_name" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-eden-500 focus:outline-none">
+                                                </div>
+                                            </div>
+                                            
+                                            <div>
+                                                <label class="block text-sm font-medium text-slate-300 mb-2">Email</label>
+                                                <input type="email" name="email" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-eden-500 focus:outline-none">
+                                            </div>
+                                            
+                                            <div>
+                                                <label class="block text-sm font-medium text-slate-300 mb-2">Company / Organisation</label>
+                                                <input type="text" name="company" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-eden-500 focus:outline-none">
+                                            </div>
+                                            
+                                            <div>
+                                                <label class="block text-sm font-medium text-slate-300 mb-2">Phone (optional)</label>
+                                                <input type="tel" name="phone" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-eden-500 focus:outline-none">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex justify-between mt-8">
+                                            <button type="button" onclick="quoteFunnel.prev()" class="text-slate-400 hover:text-white flex items-center gap-2">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                                                Back
+                                            </button>
+                                            <button type="submit" class="bg-eden-500 hover:bg-eden-400 text-slate-900 font-bold py-3 px-8 rounded-lg transition-colors flex items-center gap-2">
+                                                Get My Quote
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Success Message -->
+                                    <div id="step-success" class="step-content hidden text-center py-12">
+                                        <div class="w-20 h-20 rounded-full bg-eden-500/20 flex items-center justify-center mx-auto mb-6 text-4xl">🎉</div>
+                                        <h2 class="font-display text-3xl font-bold mb-4">Quote Request Received!</h2>
+                                        <p class="text-slate-400 mb-8 max-w-md mx-auto">Thanks for your interest. We'll review your requirements and get back to you within 24 hours with a detailed proposal.</p>
+                                        
+                                        <div class="glass rounded-2xl p-6 text-left max-w-md mx-auto mb-8 border border-slate-800">
+                                            <h3 class="font-bold text-white mb-4">Your Selection Summary:</h3>
+                                            <div id="quote-summary" class="space-y-2 text-sm text-slate-400"></div>
+                                        </div>
+                                        
+                                        <div class="flex gap-4 justify-center">
+                                            <button onclick="router.navigate('modules')" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                                                Browse Modules
+                                            </button>
+                                            <button onclick="window.print()" class="border border-slate-600 hover:border-slate-400 text-slate-300 py-3 px-6 rounded-lg transition-colors">
+                                                Print Summary
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </section>
+                `;
+            },
+
+            // ==========================================
+            // DEMOS PAGE
+            // ==========================================
+            getDemosPage() {
+                return `
+                    <section class="py-12 bg-slate-900 min-h-screen">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="text-center mb-12">
+                                <h1 class="font-display text-4xl md:text-5xl font-bold mb-4">Demos & Case Studies</h1>
+                                <p class="text-slate-400 text-lg">See our modules in action</p>
+                            </div>
+                            
+                            <!-- Filter Tags -->
+                            <div class="flex flex-wrap justify-center gap-3 mb-12">
+                                ${['All', 'Bookings', 'E-commerce', 'Portals', 'Websites', 'Marketplaces'].map((tag, i) => `
+                                    <button onclick="demos.filter('${tag}')" class="demo-filter px-4 py-2 rounded-full border ${i === 0 ? 'border-eden-500 bg-eden-500/10 text-eden-400' : 'border-slate-700 text-slate-400 hover:border-slate-500'} transition-all text-sm font-medium" data-tag="${tag}">
+                                        ${tag}
+                                    </button>
+                                `).join('')}
+                            </div>
+                            
+                            <!-- Demos Grid -->
+                            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="demos-grid">
+                                ${[
+                                    {
+                                        title: 'Café Bloom',
+                                        category: 'Bookings',
+                                        type: 'Restaurant booking system',
+                                        image: '☕',
+                                        problem: 'Manual booking management was taking 10+ hours/week',
+                                        solution: 'Smart Bookings Pro module',
+                                        outcome: '85% reduction in admin time, 40% increase in reservations'
+                                    },
+                                    {
+                                        title: 'TradePro NZ',
+                                        category: 'Portals',
+                                        type: 'Tradesperson dashboard',
+                                        image: '🔧',
+                                        problem: 'Disorganized job tracking and invoicing',
+                                        solution: 'Admin Central + Custom fields',
+                                        outcome: '3x faster job completion, 95% client satisfaction'
+                                    },
+                                    {
+                                        title: 'Marae Connect',
+                                        category: 'Websites',
+                                        type: 'Iwi community portal',
+                                        image: '🌿',
+                                        problem: 'Scattered communication across multiple platforms',
+                                        solution: 'Member Hub + Website Starter',
+                                        outcome: 'Unified 500+ members, streamlined event management'
+                                    },
+                                    {
+                                        title: 'Kiwi Crafts',
+                                        category: 'E-commerce',
+                                        type: 'Artisan marketplace',
+                                        image: '🎨',
+                                        problem: 'Local artists needed online presence',
+                                        solution: 'Market Maker (customized)',
+                                        outcome: '120 vendors onboarded, $50K+ monthly GMV'
+                                    },
+                                    {
+                                        title: 'Wellness Studio',
+                                        category: 'Bookings',
+                                        type: 'Health appointments',
+                                        image: '🧘',
+                                        problem: 'No-show rate of 30% costing revenue',
+                                        solution: 'Smart Bookings Pro with SMS',
+                                        outcome: 'No-shows reduced to 5%, revenue up 25%'
+                                    },
+                                    {
+                                        title: 'Legal Partners',
+                                        category: 'Portals',
+                                        type: 'Client portal',
+                                        image: '⚖️',
+                                        problem: 'Clients calling for case updates constantly',
+                                        solution: 'Member Hub with document sharing',
+                                        outcome: '60% fewer support calls, improved client retention'
+                                    }
+                                ].map(demo => `
+                                    <div class="demo-card glass rounded-2xl overflow-hidden border border-slate-800 hover:border-eden-500/50 transition-all group" data-category="${demo.category}">
+                                        <div class="aspect-video bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center text-6xl relative overflow-hidden">
+                                            <div class="absolute inset-0 bg-eden-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                            ${demo.image}
+                                        </div>
+                                        <div class="p-6">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <span class="text-xs font-medium text-eden-400 bg-eden-500/10 px-2 py-1 rounded">${demo.category}</span>
+                                                <span class="text-xs text-slate-500">${demo.type}</span>
+                                            </div>
+                                            <h3 class="font-display text-xl font-bold mb-4">${demo.title}</h3>
+                                            
+                                            <div class="space-y-3 text-sm">
+                                                <div>
+                                                    <span class="text-slate-500">Problem:</span>
+                                                    <p class="text-slate-300">${demo.problem}</p>
+                                                </div>
+                                                <div>
+                                                    <span class="text-slate-500">Solution:</span>
+                                                    <p class="text-slate-300">${demo.solution}</p>
+                                                </div>
+                                                <div class="pt-2 border-t border-slate-800">
+                                                    <span class="text-eden-400 font-medium">Result:</span>
+                                                    <p class="text-white">${demo.outcome}</p>
+                                                </div>
+                                            </div>
+                                            
+                                            <button onclick="alert('Live demo launching...')" class="w-full mt-6 border border-slate-600 hover:border-eden-500 text-slate-300 hover:text-eden-400 py-2 rounded-lg transition-all text-sm font-medium flex items-center justify-center gap-2">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                                View Live Demo
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </section>
+                `;
+            },
+
+            // ==========================================
+            // CONTACT PAGE
+            // ==========================================
+            getContactPage() {
+                return `
+                    <section class="py-12 bg-slate-900 min-h-screen">
+                        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div class="text-center mb-12">
+                                <h1 class="font-display text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
+                                <p class="text-slate-400 text-lg">Have questions? We're here to help.</p>
+                            </div>
+                            
+                            <div class="grid md:grid-cols-2 gap-8">
+                                <div class="glass rounded-3xl p-8 border border-slate-800">
+                                    <h2 class="font-display text-2xl font-bold mb-6">Send a Message</h2>
+                                    <form onsubmit="event.preventDefault(); alert('Message sent! We\'ll be in touch soon.');" class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-slate-300 mb-2">Name</label>
+                                            <input type="text" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-eden-500 focus:outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-slate-300 mb-2">Email</label>
+                                            <input type="email" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-eden-500 focus:outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-slate-300 mb-2">Message</label>
+                                            <textarea rows="4" required class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-eden-500 focus:outline-none"></textarea>
+                                        </div>
+                                        <button type="submit" class="w-full bg-eden-500 hover:bg-eden-400 text-slate-900 font-bold py-3 rounded-xl transition-colors">
+                                            Send Message
+                                        </button>
+                                    </form>
+                                </div>
+                                
+                                <div class="space-y-6">
+                                    <div class="glass rounded-2xl p-6 border border-slate-800">
+                                        <div class="w-12 h-12 rounded-xl bg-eden-500/20 flex items-center justify-center text-2xl mb-4">📧</div>
+                                        <h3 class="font-bold text-white mb-2">Email Us</h3>
+                                        <p class="text-slate-400 text-sm mb-2">For general inquiries:</p>
+                                        <a href="mailto:hello@edensoftware.nz" class="text-eden-400 hover:text-eden-300">hello@edensoftware.nz</a>
+                                    </div>
+                                    
+                                    <div class="glass rounded-2xl p-6 border border-slate-800">
+                                        <div class="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center text-2xl mb-4">📱</div>
+                                        <h3 class="font-bold text-white mb-2">Call Us</h3>
+                                        <p class="text-slate-400 text-sm mb-2">Mon-Fri, 9am-5pm NZST:</p>
+                                        <a href="tel:+6491234567" class="text-accent hover:text-accent-light">+64 9 123 4567</a>
+                                    </div>
+                                    
+                                    <div class="glass rounded-2xl p-6 border border-slate-800">
+                                        <div class="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-2xl mb-4">🥝</div>
+                                        <h3 class="font-bold text-white mb-2">Visit Us</h3>
+                                        <p class="text-slate-400 text-sm">
+                                            Eden Software Ltd<br>
+                                            123 Tech Street<br>
+                                            Auckland 1010<br>
+                                            New Zealand
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+            }
+        };
+
+        // Initialize global handlers
+        window.pricingToggle = {
+            setHosting(type) {
+                const selfBtn = document.getElementById('hosting-self');
+                const edenBtn = document.getElementById('hosting-eden');
+                const selfDetails = document.getElementById('hosting-details-self');
+                const edenDetails = document.getElementById('hosting-details-eden');
+                
+                if(type === 'self') {
+                    selfBtn.classList.add('bg-eden-500', 'text-slate-900');
+                    selfBtn.classList.remove('text-slate-400');
+                    edenBtn.classList.remove('bg-eden-500', 'text-slate-900');
+                    edenBtn.classList.add('text-slate-400');
+                    selfDetails.classList.remove('hidden');
+                    edenDetails.classList.add('hidden');
+                } else {
+                    edenBtn.classList.add('bg-eden-500', 'text-slate-900');
+                    edenBtn.classList.remove('text-slate-400');
+                    selfBtn.classList.remove('bg-eden-500', 'text-slate-900');
+                    selfBtn.classList.add('text-slate-400');
+                    edenDetails.classList.remove('hidden');
+                    selfDetails.classList.add('hidden');
+                }
+            }
+        };
+
+        window.quoteFunnel = {
+            currentStep: 1,
+            totalSteps: 5,
+            formData: {},
+            
+            next() {
+                if(this.currentStep < this.totalSteps) {
+                    document.getElementById(`step-${this.currentStep}`).classList.add('hidden');
+                    this.currentStep++;
+                    document.getElementById(`step-${this.currentStep}`).classList.remove('hidden');
+                    this.updateProgress();
+                }
+            },
+            
+            prev() {
+                if(this.currentStep > 1) {
+                    document.getElementById(`step-${this.currentStep}`).classList.add('hidden');
+                    this.currentStep--;
+                    document.getElementById(`step-${this.currentStep}`).classList.remove('hidden');
+                    this.updateProgress();
+                }
+            },
+            
+            updateProgress() {
+                const percent = (this.currentStep / this.totalSteps) * 100;
+                document.getElementById('progress-bar').style.width = percent + '%';
+                document.getElementById('current-step').textContent = this.currentStep;
+                
+                const names = ['Project Type', 'Acquisition Model', 'Features', 'Hosting & Budget', 'Your Details'];
+                document.getElementById('step-name').textContent = names[this.currentStep - 1];
+            },
+            
+            submit(e) {
+                e.preventDefault();
+                const form = new FormData(e.target);
+                const data = {};
+                form.forEach((value, key) => {
+                    if(data[key]) {
+                        if(Array.isArray(data[key])) {
+                            data[key].push(value);
+                        } else {
+                            data[key] = [data[key], value];
+                        }
+                    } else {
+                        data[key] = value;
+                    }
+                });
+                
+                // Show success
+                document.getElementById(`step-${this.currentStep}`).classList.add('hidden');
+                document.getElementById('step-success').classList.remove('hidden');
+                document.getElementById('progress-bar').style.width = '100%';
+                
+                // Generate summary
+                const summary = document.getElementById('quote-summary');
+                const projectTypes = {website: 'Website', webapp: 'Web App', portal: 'Portal/Dashboard', marketplace: 'Marketplace', ecommerce: 'E-commerce', other: 'Custom Project'};
+                const acquisitionTypes = {rent: 'Rent a Module', buy: 'Buy the Code', custom: 'Custom Build'};
+                
+                summary.innerHTML = `
+                    <div class="flex justify-between"><span>Project:</span> <span class="text-white">${projectTypes[data.project_type] || '-'}</span></div>
+                    <div class="flex justify-between"><span>Path:</span> <span class="text-white">${acquisitionTypes[data.acquisition] || '-'}</span></div>
+                    <div class="flex justify-between"><span>Hosting:</span> <span class="text-white">${data.hosting === 'eden' ? 'Eden Managed' : 'Self-Hosted'}</span></div>
+                    <div class="flex justify-between"><span>Budget:</span> <span class="text-white">${data.budget || '-'}</span></div>
+                    <div class="flex justify-between"><span>Timeline:</span> <span class="text-white">${data.timeline || '-'}</span></div>
+                `;
+                
+                console.log('Quote submission:', data);
+            }
+        };
+
+        window.demos = {
+            filter(tag) {
+                document.querySelectorAll('.demo-filter').forEach(btn => {
+                    if(btn.dataset.tag === tag) {
+                        btn.classList.add('border-eden-500', 'bg-eden-500/10', 'text-eden-400');
+                        btn.classList.remove('border-slate-700', 'text-slate-400');
+                    } else {
+                        btn.classList.remove('border-eden-500', 'bg-eden-500/10', 'text-eden-400');
+                        btn.classList.add('border-slate-700', 'text-slate-400');
+                    }
+                });
+                
+                document.querySelectorAll('.demo-card').forEach(card => {
+                    if(tag === 'All' || card.dataset.category === tag) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+        };
+
+        // Initialize router on load
+        document.addEventListener('DOMContentLoaded', () => {
+            router.render();
+            
+            // Navbar scroll effect
+            window.addEventListener('scroll', () => {
+                const nav = document.getElementById('navbar');
+                if(window.scrollY > 50) {
+                    nav.classList.add('shadow-lg');
+                } else {
+                    nav.classList.remove('shadow-lg');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
